@@ -20,21 +20,21 @@ security:
             lazy: true
             provider: app_user_provider
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
             form_login:
                 login_path: app_login
                 check_path: app_login
-                csrf_token_generator: security.csrf.token_manager
+                enable_csrf: true
 
             logout:
                 path: app_logout
                 target: /
+            custom_authenticator: App\Security\SecurityControllerAuthenticator
 
-            # Custom authenticator
-            # custom_authenticators:
-            #     - App\Security\LoginFormAuthenticator
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                always_remember_me: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
