@@ -27,12 +27,12 @@ class Order
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?float $totalPrice = null;
 
-    #[ORM\OneToMany(mappedBy: 'OrderItem', targetEntity: OrderItem::class)]
-    private Collection $product;
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderItem::class, orphanRemoval: true)]
+    private Collection $orderItems;
 
     public function __construct()
     {
-        $this->product = new ArrayCollection();
+        $this->orderItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,27 +79,27 @@ class Order
     /**
      * @return Collection<int, OrderItem>
      */
-    public function getProduct(): Collection
+    public function getOrderItems(): Collection
     {
-        return $this->product;
+        return $this->orderItems;
     }
 
-    public function addProduct(OrderItem $product): static
+    public function addOrderItem(OrderItem $orderItem): static
     {
-        if (!$this->product->contains($product)) {
-            $this->product->add($product);
-            $product->setOrderItem($this);
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems->add($orderItem);
+            $orderItem->setOrder($this);
         }
 
         return $this;
     }
 
-    public function removeProduct(OrderItem $product): static
+    public function removeOrderItem(OrderItem $orderItem): static
     {
-        if ($this->product->removeElement($product)) {
+        if ($this->orderItems->removeElement($orderItem)) {
             // set the owning side to null (unless already changed)
-            if ($product->getOrderItem() === $this) {
-                $product->setOrderItem(null);
+            if ($orderItem->getOrder() === $this) {
+                $orderItem->setOrder(null);
             }
         }
 
